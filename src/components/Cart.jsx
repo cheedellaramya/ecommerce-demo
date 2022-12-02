@@ -3,7 +3,6 @@ import './Cart.css';
 import { useEffect } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import { cartActions } from '../store/cartSlice';
-import { productActions } from '../store/productSlice';
 import { NavLink } from 'react-router-dom';
 
  const Cart = () => {
@@ -11,7 +10,6 @@ import { NavLink } from 'react-router-dom';
     const cartTotal = useSelector((state)=>state.cart.cartTotal);
     const isLoggedIn = useSelector((state)=>state.loginInfo.isLoggedIn)
     
-    console.log(itemsList);
     const dispatch = useDispatch();
     const updateQuantity=(e,id)=>{
         const qty = e.target.value;
@@ -22,7 +20,7 @@ import { NavLink } from 'react-router-dom';
         dispatch(cartActions.removeFromCart(id))
     }
  useEffect(()=>{
-  dispatch(cartActions.getTotal())
+    dispatch(cartActions.getTotal())
  },[itemsList])
 
   return (
