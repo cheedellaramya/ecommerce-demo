@@ -7,11 +7,13 @@ import Product from './components/Product';
 import Cart from './components/Cart';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
+import Search from './components/Search';
 
 function App() {
   return (
     <div>
         <Navbar/>
+
           <Routes>
             
                   <Route  path ='/' element= {<Home/>}/>

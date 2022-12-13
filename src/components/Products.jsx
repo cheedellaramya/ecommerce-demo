@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { productActions } from "../store/productSlice";
+import Search from "./Search";
 
 export default function Products() {
-    const[data,setData] = useState([]);
-    const[filter,setFilter] = useState('');
+    const[filter,setFilter] = useState([]);
+    const dispatch = useDispatch();
+    const sortedProducts = useSelector((state)=> state.product.products);
+    const dynamicFilters = useSelector((state)=>state.product.categories);
+
+    useEffect(() => {
+        setFilter(sortedProducts)
+    },[sortedProducts])
+
     let componentMounted = true;
 
     useEffect(() => {
         const getProducts = async()=>{
             const response = await fetch('https://fakestoreapi.com/products');
             if(componentMounted){
-                setData(await response.clone().json());
-                setFilter(await response.json());
-                console.log(filter);
+                 const res = await response.clone().json();
+                dispatch(productActions.setProducts(res))
             }
             return () =>{
                 componentMounted = false;
@@ -21,28 +30,37 @@ export default function Products() {
         }
         getProducts();
     },[]);
-    
+
     const filterProduct =(category)=>{
-        // const category = cat.toLowerCase();
-        const updatedList = data.filter((x)=>x.category === category);
+        const updatedList = sortedProducts.filter((x)=>x.category === category);
         setFilter(updatedList);
     }
+
     const ShowProducts = (index)=>{
         return(
             <>
                 <div className="buttons d-flex justify-content-center pb-5 mb-5" key = {index}>
-                    <button className="btn btn-outline-dark me-2" onClick={()=>setFilter(data)}>All</button>
-                    <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("men's clothing")}>Men's Wear</button>
+                    <button className="btn btn-outline-dark me-2" onClick={()=>setFilter(sortedProducts)}>All</button>
+                    {
+                        dynamicFilters && dynamicFilters.map((f)=>{
+                            return(
+                                <button className="btn btn-outline-dark me-2"  onClick={()=>filterProduct(f)}>{f}</button>
+
+                            )
+                        })
+                        
+                    }
+                    {/* <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("men's clothing")}>Men's Wear</button>
                     <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("women's clothing")}>Womens Wear</button>
                     <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("jewelery")}>jwellery</button>
-                    <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("electronics")}>Electronics</button>
+                    <button className="btn btn-outline-dark me-2" onClick={()=>filterProduct("electronics")}>Electronics</button> */}
                     
                 </div>
-                    {filter && filter.map((product, index)=>{ 
+                    {filter && filter.map((product)=>{ 
                         return(
                             <>
-                            <div className="col-md-3 mb-3" key={index}>
-                                <div className="card h-100 text-center p-4" key={product.id}>
+                            <div className="col-md-3 mb-3" key={product.id}>
+                                <div className="card h-100 text-center p-4" >
                                     <img className="card-img-top" 
                                         src={product.image} alt={product.title}
                                         height='250px'/>

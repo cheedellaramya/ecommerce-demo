@@ -1,5 +1,6 @@
 import React from 'react'
 import Products from './Products'
+import Search from './Search';
 
 const Home = () =>{
   return (
@@ -15,6 +16,7 @@ const Home = () =>{
                 </div>         
             </div>
         </div>
+        <Search/>
         <Products/>
     </div>
    
